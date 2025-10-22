@@ -1,3 +1,4 @@
+// node.js - полный код с интеграцией базы данных
 document.addEventListener('DOMContentLoaded', () => {
     // ========== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ==========
     let adults = 2;
@@ -5,6 +6,10 @@ document.addEventListener('DOMContentLoaded', () => {
     let infants = 0;
     let checkinDate = null;
     let checkoutDate = null;
+    let availableDates = [];
+    let currentMonth = new Date();
+    let selectedDate = null;
+    let activeInput = null;
 
     // ========== ЭЛЕМЕНТЫ DOM ==========
     const guestsModal = document.getElementById('guestsModal');
@@ -12,13 +17,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const guestsInput = document.getElementById('guests');
     const checkinInput = document.getElementById('checkin');
     const checkoutInput = document.getElementById('checkout');
+    const guestPhoneInput = document.getElementById('phone');
+    const bookingForm = document.querySelector('.booking-form');
 
     // ========== ИНИЦИАЛИЗАЦИЯ МОДАЛЬНЫХ ОКОН ==========
-    // Скрываем модальные окна при загрузке
     if (guestsModal) guestsModal.style.display = 'none';
     if (calendarModal) calendarModal.style.display = 'none';
 
-        const reviewsContainer = document.querySelector('.reviews-container');
+    // ========== СЛАЙДЕР ОТЗЫВОВ ==========
+    const reviewsContainer = document.querySelector('.reviews-container');
     const prevButton = document.querySelector('.slider-arrow-prev');
     const nextButton = document.querySelector('.slider-arrow-next');
     
@@ -39,13 +46,12 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     }
+
     // ========== МОДАЛЬНОЕ ОКНО: ГОСТИ ==========
-    // Исправленный триггер для гостей
     const guestsTrigger = document.querySelector('.guests-input');
     if (guestsTrigger && guestsModal) {
         guestsTrigger.addEventListener('click', (e) => {
             e.stopPropagation();
-            // Восстанавливаем текущие значения
             document.querySelector('.counter-value[data-type="adults"]').textContent = adults;
             document.querySelector('.counter-value[data-type="children"]').textContent = children;
             document.querySelector('.counter-value[data-type="infants"]').textContent = infants;
@@ -53,7 +59,6 @@ document.addEventListener('DOMContentLoaded', () => {
             guestsModal.style.display = 'flex';
         });
 
-        // Закрытие по "Отмена"
         const guestsCancel = guestsModal.querySelector('.guests-cancel');
         if (guestsCancel) {
             guestsCancel.addEventListener('click', () => {
@@ -61,14 +66,12 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        // Закрытие по клику вне контента
         guestsModal.addEventListener('click', (e) => {
             if (e.target === guestsModal) {
                 guestsModal.style.display = 'none';
             }
         });
 
-        // Подтверждение выбора
         const guestsConfirm = guestsModal.querySelector('.guests-confirm');
         if (guestsConfirm) {
             guestsConfirm.addEventListener('click', () => {
@@ -81,7 +84,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        // Кнопки +/- для гостей
         document.querySelectorAll('.counter-btn.minus').forEach(btn => {
             btn.addEventListener('click', () => {
                 const type = btn.dataset.type;
@@ -110,10 +112,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ========== КАЛЕНДАРЬ ==========
-    let currentMonth = new Date();
-    let selectedDate = null;
-    let activeInput = null;
-
     const calendarDays = document.querySelector('.calendar-days');
     const calendarMonthYear = document.querySelector('.calendar-month-year');
     const calendarPrev = document.querySelector('.calendar-prev');
@@ -122,7 +120,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const calendarCancel = document.querySelector('.calendar-cancel');
     const selectedDateText = document.getElementById('selectedDateText');
 
-    // Исправленные триггеры для календаря
     const calendarTriggers = document.querySelectorAll('.date-input');
     if (calendarTriggers.length > 0 && calendarModal) {
         calendarTriggers.forEach(trigger => {
@@ -133,7 +130,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 if (!activeInput) return;
                 
-                // Пытаемся распарсить существующую дату
                 if (activeInput.value) {
                     try {
                         const parts = activeInput.value.split(' ');
@@ -214,29 +210,23 @@ document.addEventListener('DOMContentLoaded', () => {
         const year = currentMonth.getFullYear();
         const month = currentMonth.getMonth();
         
-        // Обновляем заголовок
         const monthNames = [
             'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
             'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'
         ];
         calendarMonthYear.textContent = `${monthNames[month]} ${year}`;
         
-        // Очищаем дни
         calendarDays.innerHTML = '';
 
         const firstDay = new Date(year, month, 1);
         const lastDay = new Date(year, month + 1, 0);
         
-        // День недели первого дня (0 - воскресенье)
         let firstDayIndex = firstDay.getDay();
-        // Корректируем для отображения с понедельника
         if (firstDayIndex === 0) firstDayIndex = 7;
         const startDay = firstDayIndex - 1;
 
-        // Предыдущий месяц
         const prevMonthLastDay = new Date(year, month, 0).getDate();
         
-        // Добавляем дни предыдущего месяца
         for (let i = startDay; i > 0; i--) {
             const dayEl = document.createElement('div');
             dayEl.className = 'disabled-day other-month';
@@ -245,9 +235,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const today = new Date();
-        today.setHours(0, 0, 0, 0); // Сбрасываем время для сравнения
+        today.setHours(0, 0, 0, 0);
         
-        // Добавляем дни текущего месяца
         for (let day = 1; day <= lastDay.getDate(); day++) {
             const date = new Date(year, month, day);
             date.setHours(0, 0, 0, 0);
@@ -255,17 +244,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const dayEl = document.createElement('div');
             dayEl.textContent = day;
 
-            // Проверяем, является ли день сегодняшним
             if (date.getTime() === today.getTime()) {
                 dayEl.classList.add('current-day');
             }
 
-            // Проверяем, выбран ли день
             if (selectedDate && date.getTime() === selectedDate.getTime()) {
                 dayEl.classList.add('selected-day');
             }
 
-            // Проверяем, прошедшая ли дата
             if (date < today) {
                 dayEl.classList.add('disabled-day');
             } else {
@@ -284,7 +270,6 @@ document.addEventListener('DOMContentLoaded', () => {
             calendarDays.appendChild(dayEl);
         }
 
-        // Обновляем отображение выбранной даты и состояние кнопки
         if (selectedDateText) {
             selectedDateText.textContent = selectedDate ? formatCalendarDate(selectedDate) : '--';
         }
@@ -307,7 +292,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return `${day} ${month}, ${dayOfWeek}`;
     }
 
-    // ========== ВИДЕО ==========
+    // ========== ВИДЕО ПЛЕЕР ==========
     document.querySelectorAll('.video-item').forEach((item, index) => {
         item.addEventListener('click', () => {
             const videoModal = document.createElement('div');
@@ -325,7 +310,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 z-index: 10000;
             `;
 
-            // Замените на реальные ссылки на видео
             const videoSrc = [
                 'https://rutube.ru/video/7d11eb12ae1d2fcd5377c2d85d70df0e/?r=wd',
                 'https://rutube.ru/video/7d11eb12ae1d2fcd5377c2d85d70df0e/?r=wd'
@@ -367,6 +351,131 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     });
+
+    // ========== БАЗА ДАННЫХ: API ФУНКЦИИ ==========
+    async function loadAvailableDates() {
+        try {
+            const response = await fetch('/api/availability');
+            if (response.ok) {
+                availableDates = await response.json();
+                console.log('Доступные даты загружены:', availableDates);
+            }
+        } catch (error) {
+            console.error('Ошибка загрузки доступных дат:', error);
+        }
+    }
+
+    async function loadReviews() {
+        try {
+            const response = await fetch('/api/reviews');
+            if (response.ok) {
+                const reviews = await response.json();
+                renderReviews(reviews);
+            }
+        } catch (error) {
+            console.error('Ошибка загрузки отзывов:', error);
+        }
+    }
+
+    function renderReviews(reviews) {
+        const container = document.querySelector('.reviews-container');
+        if (!container || !reviews.length) return;
+
+        container.innerHTML = reviews.map(review => `
+            <div class="review">
+                <div class="review-header">
+                    <img src="${review.avatar_url || 'photos/default-avatar.jpg'}" alt="${review.guest_name}" class="review-avatar">
+                    <h3 class="review-name">${review.guest_name}</h3>
+                </div>
+                <p class="review-text">${review.review_text}</p>
+                ${review.rating ? `<div class="review-rating">Рейтинг: ${'★'.repeat(review.rating)}${'☆'.repeat(5-review.rating)}</div>` : ''}
+                ${review.review_images ? `
+                    <div class="review-images">
+                        ${review.review_images.split(',').map(img => `<img src="${img.trim()}" alt="Фото отзыва">`).join('')}
+                    </div>
+                ` : ''}
+            </div>
+        `).join('');
+    }
+
+    async function submitBooking(bookingData) {
+        try {
+            const response = await fetch('/api/bookings', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(bookingData)
+            });
+
+            const result = await response.json();
+            
+            if (response.ok) {
+                showNotification('Бронирование успешно создано! Мы свяжемся с вами для подтверждения.', 'success');
+                return true;
+            } else {
+                showNotification(result.error || 'Ошибка при бронировании', 'error');
+                return false;
+            }
+        } catch (error) {
+            console.error('Ошибка:', error);
+            showNotification('Ошибка соединения с сервером', 'error');
+            return false;
+        }
+    }
+
+    async function submitApplication(formData) {
+        try {
+            const response = await fetch('/api/applications', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            });
+
+            const result = await response.json();
+            
+            if (response.ok) {
+                showNotification('Заявка отправлена! Мы свяжемся с вами в ближайшее время.', 'success');
+                return true;
+            } else {
+                showNotification(result.error || 'Ошибка при отправке заявки', 'error');
+                return false;
+            }
+        } catch (error) {
+            console.error('Ошибка:', error);
+            showNotification('Ошибка соединения с сервером', 'error');
+            return false;
+        }
+    }
+
+    // ========== УВЕДОМЛЕНИЯ ==========
+    function showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            background: ${type === 'success' ? '#4CAF50' : type === 'error' ? '#f44336' : '#2196F3'};
+            color: white;
+            border-radius: 5px;
+            z-index: 10001;
+            max-width: 300px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        `;
+        notification.textContent = message;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            if (notification.parentNode) {
+                document.body.removeChild(notification);
+            }
+        }, 5000);
+    }
 
     // ========== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==========
     function updateGuestsTotal() {
@@ -423,17 +532,95 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (!costDetail || !costTotal) return;
 
-        // Базовая цена за 2 ночи
         const basePrice = 6000;
-        const nights = 2;
-        
-        // Доплата за дополнительных гостей
+        const nights = calculateNights();
         const extraGuests = Math.max(0, (adults + children) - 2);
         const extraPrice = extraGuests * 1000 * nights;
         const total = basePrice * nights + extraPrice;
 
-        costDetail.textContent = `${basePrice} x ${nights} ночи${extraGuests > 0 ? ` + ${extraGuests} доп. гостей` : ''}`;
+        costDetail.textContent = `${basePrice} x ${nights} ночи${nights > 1 ? '' : 'ь'}${extraGuests > 0 ? ` + ${extraGuests} доп. гостей` : ''}`;
         costTotal.textContent = `${total}₽`;
+    }
+
+    function calculateNights() {
+        if (!checkinDate || !checkoutDate) return 2;
+        const diffTime = Math.abs(checkoutDate - checkinDate);
+        return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    }
+
+    function formatDateForDB(date) {
+        return date.toISOString().split('T')[0];
+    }
+
+    // ========== ОБРАБОТКА ФОРМ ==========
+    if (bookingForm) {
+        bookingForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            if (!checkinDate || !checkoutDate) {
+                showNotification('Пожалуйста, выберите даты заезда и выезда', 'error');
+                return;
+            }
+
+            if (!guestPhoneInput.value || guestPhoneInput.value.replace(/\D/g, '').length < 10) {
+                showNotification('Пожалуйста, введите корректный номер телефона', 'error');
+                return;
+            }
+
+            const bookingData = {
+                checkin_date: formatDateForDB(checkinDate),
+                checkout_date: formatDateForDB(checkoutDate),
+                adults: adults,
+                children: children,
+                infants: infants,
+                total_price: calculateTotalPrice(),
+                guest_phone: guestPhoneInput.value,
+                created_at: new Date().toISOString()
+            };
+
+            const success = await submitBooking(bookingData);
+            
+            if (success) {
+                bookingForm.reset();
+                adults = 2;
+                children = 0;
+                infants = 0;
+                updateGuestsInput();
+                updateCost();
+                checkinDate = null;
+                checkoutDate = null;
+                checkinInput.value = '';
+                checkoutInput.value = '';
+            }
+        });
+    }
+
+    function calculateTotalPrice() {
+        const basePrice = 6000;
+        const nights = calculateNights();
+        const extraGuests = Math.max(0, (adults + children) - 2);
+        const extraPrice = extraGuests * 1000 * nights;
+        return basePrice * nights + extraPrice;
+    }
+
+    // Обработка кнопки "Оставить заявку"
+    const applicationBtn = document.querySelector('.btn-application');
+    if (applicationBtn) {
+        applicationBtn.addEventListener('click', async function(e) {
+            e.preventDefault();
+            
+            const applicationData = {
+                type: 'general_application',
+                timestamp: new Date().toISOString(),
+                source: 'header_button'
+            };
+
+            const success = await submitApplication(applicationData);
+            
+            if (success) {
+                showNotification('Заявка отправлена! Мы свяжемся с вами в ближайшее время.', 'success');
+            }
+        });
     }
 
     // ========== ПЛАВНАЯ ПРОКРУТКА ДЛЯ НАВИГАЦИИ ==========
@@ -453,33 +640,19 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // ========== ОБРАБОТКА ФОРМЫ БРОНИРОВАНИЯ ==========
-    const bookingForm = document.querySelector('.booking-form');
-    if (bookingForm) {
-        bookingForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Простая валидация телефона
-            const phoneInput = document.getElementById('phone');
-            if (phoneInput && phoneInput.value.length < 10) {
-                alert('Пожалуйста, введите корректный номер телефона');
-                return;
-            }
-            
-            alert('Заявка отправлена! Мы свяжемся с вами в ближайшее время.');
-            bookingForm.reset();
-            
-            // Сброс данных
-            adults = 2;
-            children = 0;
-            infants = 0;
-            updateGuestsInput();
-            updateCost();
-        });
+    // ========== ИНИЦИАЛИЗАЦИЯ ==========
+    function init() {
+        updateGuestsInput();
+        updateCost();
+        renderCalendar();
+        
+        // Загрузка данных с сервера
+        loadAvailableDates();
+        loadReviews();
+        
+        console.log('Система бронирования глэмпинга инициализирована');
     }
 
-    // ========== ИНИЦИАЛИЗАЦИЯ ==========
-    updateGuestsInput();
-    updateCost();
-    renderCalendar(); // Инициализируем календарь при загрузке
+    // Запуск инициализации
+    init();
 });
