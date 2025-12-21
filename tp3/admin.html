@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Управление бронированиями - Лесной Глэмпинг</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .admin-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        /* Шапка админки */
+        .admin-header {
+            background: linear-gradient(90deg, #1B3F14 0%, #47A535 100%);
+            color: white;
+            padding: 25px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-header h1 {
+            font-size: 28px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .admin-logo {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1B3F14;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .admin-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #47A535;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #3a8a2a;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+        .btn-secondary:hover {
+            background: #e9ecef;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        /* Фильтры и поиск */
+        .admin-filters {
+            padding: 25px 40px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .filter-group label {
+            font-size: 14px;
+            color: #666;
+            font-weight: 600;
+        }
+
+        .filter-select, .search-input {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            min-width: 200px;
+            background: white;
+        }
+
+        .search-input {
+            flex: 1;
+            max-width: 300px;
+        }
+
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 25px 40px;
+            background: #f8f9fa;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        .stat-pending .stat-icon { background: #ffc107; }
+        .stat-confirmed .stat-icon { background: #28a745; }
+        .stat-cancelled .stat-icon { background: #dc3545; }
+        .stat-total .stat-icon { background: #17a2b8; }
+
+        .stat-info h3 {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* Таблица бронирований */
+        .bookings-table-container {
+            padding: 0 40px 40px;
+            overflow-x: auto;
+        }
+
+        .bookings-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        .bookings-table th {
+            background: #f8f9fa;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #495057;
+            border-bottom: 2px solid #dee2e6;
+            position: sticky;
+            top: 0;
+        }
+
+        .bookings-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e9ecef;
+            vertical-align: top;
+        }
+
+        .bookings-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        /* Статусы */
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-confirmed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-cancelled {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* Действия */
+        .booking-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            width: 35px;
+            height: 35px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .btn-view {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-confirm {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-cancel {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-edit {
+            background: #ffc107;
+            color: #333;
+        }
+
+        /* Модальное окно деталей */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            width: 100%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: modalSlide 0.3s ease;
+        }
+
+        @keyframes modalSlide {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            background: linear-gradient(90deg, #1B3F14 0%, #47A535 100%);
+            color: white;
+            padding: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .modal-header h2 {
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 28px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.3s ease;
+        }
+
+        .close-modal:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .booking-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .detail-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .detail-section h3 {
+            color: #1B3F14;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #47A535;
+            font-size: 16px;
+        }
+
+        .detail-item {
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .detail-label {
+            color: #666;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .detail-value {
+            color: #333;
+            font-weight: 500;
+            text-align: right;
+        }
+
+        .detail-value.phone {
+            direction: ltr;
+            unicode-bidi: embed;
+        }
+
+        .modal-footer {
+            padding: 20px 30px;
+            background: #f8f9fa;
+            border-radius: 0 0 15px 15px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            border-top: 1px solid #e9ecef;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .admin-header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+
+            .admin-filters {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filter-select, .search-input {
+                min-width: 100%;
+            }
+
+            .bookings-table-container {
+                padding: 0 20px 20px;
+            }
+
+            .bookings-table {
+                font-size: 12px;
+            }
+
+            .bookings-table th,
+            .bookings-table td {
+                padding: 10px 8px;
+            }
+
+            .booking-actions {
+                flex-wrap: wrap;
+            }
+
+            .modal-body {
+                padding: 20px;
+            }
+        }
+
+        /* Загрузка */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-size: 16px;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #47A535;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Пагинация */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .page-btn {
+            width: 40px;
+            height: 40px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .page-btn:hover {
+            background: #f8f9fa;
+            border-color: #47A535;
+        }
+
+        .page-btn.active {
+            background: #47A535;
+            color: white;
+            border-color: #47A535;
+        }
+
+        .page-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Уведомления */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            z-index: 1001;
+            animation: slideInRight 0.3s ease;
+            max-width: 400px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .notification.success {
+            background: #28a745;
+        }
+
+        .notification.error {
+            background: #dc3545;
+        }
+
+        .notification.warning {
+            background: #ffc107;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Шапка -->
+        <div class="admin-header">
+            <h1>
+                <span class="admin-logo">ЛГ</span>
+                Управление бронированиями - Лесной Глэмпинг
+            </h1>
+            <div class="admin-actions">
+                <button class="btn btn-secondary" onclick="refreshBookings()">
+                    🔄 Обновить
+                </button>
+                <button class="btn btn-primary" onclick="exportToExcel()">
+                    📊 Экспорт в Excel
+                </button>
+            </div>
+        </div>
+
+        <!-- Статистика -->
+        <div class="stats-cards">
+            <div class="stat-card stat-pending">
+                <div class="stat-icon">⏳</div>
+                <div class="stat-info">
+                    <h3>Ожидают подтверждения</h3>
+                    <div class="stat-number" id="statPending">0</div>
+                </div>
+            </div>
+            <div class="stat-card stat-confirmed">
+                <div class="stat-icon">✅</div>
+                <div class="stat-info">
+                    <h3>Подтвержденные</h3>
+                    <div class="stat-number" id="statConfirmed">0</div>
+                </div>
+            </div>
+            <div class="stat-card stat-cancelled">
+                <div class="stat-icon">❌</div>
+                <div class="stat-info">
+                    <h3>Отмененные</h3>
+                    <div class="stat-number" id="statCancelled">0</div>
+                </div>
+            </div>
+            <div class="stat-card stat-total">
+                <div class="stat-icon">📊</div>
+                <div class="stat-info">
+                    <h3>Всего бронирований</h3>
+                    <div class="stat-number" id="statTotal">0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Фильтры -->
+        <div class="admin-filters">
+            <div class="filter-group">
+                <label for="statusFilter">Статус</label>
+                <select id="statusFilter" class="filter-select" onchange="filterBookings()">
+                    <option value="">Все статусы</option>
+                    <option value="pending">Ожидают</option>
+                    <option value="confirmed">Подтвержденные</option>
+                    <option value="cancelled">Отмененные</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label for="dateFilter">Дата</label>
+                <select id="dateFilter" class="filter-select" onchange="filterBookings()">
+                    <option value="">Все даты</option>
+                    <option value="today">Сегодня</option>
+                    <option value="tomorrow">Завтра</option>
+                    <option value="week">На этой неделе</option>
+                    <option value="month">В этом месяце</option>
+                    <option value="future">Будущие</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="searchInput">Поиск</label>
+                <input type="text" id="searchInput" class="search-input" 
+                       placeholder="Имя, телефон, email..." 
+                       oninput="filterBookings()">
+            </div>
+        </div>
+
+        <!-- Таблица -->
+        <div class="bookings-table-container">
+            <div class="loading" id="loading">
+                <div class="loading-spinner"></div>
+                <p>Загрузка бронирований...</p>
+            </div>
+
+            <table class="bookings-table" id="bookingsTable" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Дата брони</th>
+                        <th>Гость</th>
+                        <th>Телефон</th>
+                        <th>Даты проживания</th>
+                        <th>Гости</th>
+                        <th>Стоимость</th>
+                        <th>Статус</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody id="bookingsTableBody">
+                    <!-- Данные загружаются через JS -->
+                </tbody>
+            </table>
+
+            <!-- Пагинация -->
+            <div class="pagination" id="pagination" style="display: none;">
+                <!-- Кнопки пагинации -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно деталей -->
+    <div class="modal-overlay" id="detailsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>
+                    <span>📋</span>
+                    Детали бронирования <span id="modalBookingId"></span>
+                </h2>
+                <button class="close-modal" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Детали загружаются через JS -->
+            </div>
+            <div class="modal-footer" id="modalFooter">
+                <!-- Кнопки действий -->
+            </div>
+        </div>
+    </div>
+
+    <!-- В конце файла admin.html, замените весь тег <script> на этот: -->
+<script>
+    // ========== КОНСТАНТЫ И УТИЛИТЫ ==========
+    const ADMIN_TOKEN = 'admin-secret-token';
+    
+    // Функция для получения заголовков авторизации
+    function getAuthHeaders() {
+        return {
+            'Authorization': 'Bearer ' + ADMIN_TOKEN,
+            'Content-Type': 'application/json'
+        };
+    }
+    
+    // Обертка для всех fetch запросов с авторизацией
+    async function adminFetch(url, options = {}) {
+        const defaultOptions = {
+            method: 'GET',
+            headers: getAuthHeaders()
+        };
+        
+        const mergedOptions = {
+            ...defaultOptions,
+            ...options,
+            headers: {
+                ...defaultOptions.headers,
+                ...(options.headers || {})
+            }
+        };
+        
+        console.log('🔐 Админ запрос:', {
+            url: url,
+            method: mergedOptions.method,
+            headers: mergedOptions.headers
+        });
+        
+        try {
+            const response = await fetch(url, mergedOptions);
+            console.log('📥 Ответ:', response.status, response.statusText);
+            
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('❌ Ошибка ответа:', errorText);
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            
+            return await response.json();
+        } catch (error) {
+            console.error('❌ Ошибка запроса:', error);
+            throw error;
+        }
+    }
+
+    // ========== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ==========
+    let allBookings = [];
+    let filteredBookings = [];
+    let currentPage = 1;
+    const itemsPerPage = 10;
+
+    // ========== ИНИЦИАЛИЗАЦИЯ ==========
+    document.addEventListener('DOMContentLoaded', async () => {
+        console.log('🚀 Админ панель загружается...');
+        console.log('🔐 Токен установлен:', ADMIN_TOKEN);
+        console.log('📤 Пример заголовка:', getAuthHeaders());
+        
+        // Тест подключения
+        await testConnection();
+        
+        // Загружаем бронирования
+        await loadBookings();
+        
+        // Настраиваем обработчики событий
+        setupEventListeners();
+    });
+
+    // ========== ОСНОВНЫЕ ФУНКЦИИ ==========
+
+    // Тест подключения к серверу
+    async function testConnection() {
+        try {
+            console.log('🧪 Проверка связи с сервером...');
+            const health = await adminFetch('/api/admin/health');
+            console.log('✅ Сервер отвечает:', health);
+            showNotification('Соединение с сервером установлено', 'success');
+        } catch (error) {
+            console.error('❌ Ошибка подключения:', error);
+            showNotification('Ошибка подключения к серверу', 'error');
+        }
+    }
+
+    // Загрузка бронирований
+    async function loadBookings() {
+        try {
+            showLoading(true);
+            
+            console.log('📤 Загружаем бронирования...');
+            allBookings = await adminFetch('/api/admin/bookings');
+            
+            console.log('✅ Загружено бронирований:', allBookings.length);
+            
+            // Обновляем статистику
+            updateStatistics();
+            
+            // Показываем таблицу
+            filterBookings();
+            
+        } catch (error) {
+            console.error('Ошибка загрузки:', error);
+            showNotification('Ошибка загрузки данных: ' + error.message, 'error');
+        } finally {
+            showLoading(false);
+        }
+    }
+
+    // Обновление статистики
+    function updateStatistics() {
+        const pending = allBookings.filter(b => b.status === 'pending').length;
+        const confirmed = allBookings.filter(b => b.status === 'confirmed').length;
+        const cancelled = allBookings.filter(b => b.status === 'cancelled').length;
+        
+        document.getElementById('statPending').textContent = pending;
+        document.getElementById('statConfirmed').textContent = confirmed;
+        document.getElementById('statCancelled').textContent = cancelled;
+        document.getElementById('statTotal').textContent = allBookings.length;
+    }
+
+    // Фильтрация бронирований
+    function filterBookings() {
+        const statusFilter = document.getElementById('statusFilter').value;
+        const dateFilter = document.getElementById('dateFilter').value;
+        const searchText = document.getElementById('searchInput').value.toLowerCase();
+        const today = new Date();
+        
+        filteredBookings = allBookings.filter(booking => {
+            // Фильтр по статусу
+            if (statusFilter && booking.status !== statusFilter) {
+                return false;
+            }
+            
+            // Фильтр по дате
+            const checkinDate = new Date(booking.checkin_date);
+            
+            if (dateFilter) {
+                switch(dateFilter) {
+                    case 'today':
+                        if (checkinDate.toDateString() !== today.toDateString()) return false;
+                        break;
+                    case 'tomorrow':
+                        const tomorrow = new Date(today);
+                        tomorrow.setDate(tomorrow.getDate() + 1);
+                        if (checkinDate.toDateString() !== tomorrow.toDateString()) return false;
+                        break;
+                    case 'week':
+                        const weekEnd = new Date(today);
+                        weekEnd.setDate(weekEnd.getDate() + 7);
+                        if (checkinDate < today || checkinDate > weekEnd) return false;
+                        break;
+                    case 'month':
+                        const monthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+                        if (checkinDate < today || checkinDate > monthEnd) return false;
+                        break;
+                    case 'future':
+                        if (checkinDate < today) return false;
+                        break;
+                }
+            }
+            
+            // Поиск по тексту
+            if (searchText) {
+                const searchFields = [
+                    booking.guest_name,
+                    booking.guest_phone,
+                    booking.guest_email,
+                    booking.id.toString()
+                ].some(field => 
+                    field && field.toString().toLowerCase().includes(searchText)
+                );
+                
+                if (!searchFields) return false;
+            }
+            
+            return true;
+        });
+        
+        // Сортировка по дате создания (новые сверху)
+        filteredBookings.sort((a, b) => 
+            new Date(b.created_at) - new Date(a.created_at)
+        );
+        
+        currentPage = 1;
+        renderTable();
+        renderPagination();
+    }
+
+    // Отрисовка таблицы
+    function renderTable() {
+        const tbody = document.getElementById('bookingsTableBody');
+        tbody.innerHTML = '';
+        
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        const pageBookings = filteredBookings.slice(startIndex, endIndex);
+        
+        if (pageBookings.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="9" style="text-align: center; padding: 40px; color: #666;">
+                        📭 Бронирования не найдены
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+        
+        pageBookings.forEach(booking => {
+            const row = document.createElement('tr');
+            
+            // Форматируем даты
+            const createdDate = formatDate(booking.created_at);
+            const checkinDate = formatDate(booking.checkin_date);
+            const checkoutDate = formatDate(booking.checkout_date);
+            
+            // Получаем статус
+            const statusText = {
+                'pending': 'Ожидает',
+                'confirmed': 'Подтверждено',
+                'cancelled': 'Отменено'
+            }[booking.status];
+            
+            const statusClass = `status-${booking.status}`;
+            
+            // Создаем строку
+            row.innerHTML = `
+                <td><strong>#${booking.id}</strong></td>
+                <td>${createdDate}</td>
+                <td>${booking.guest_name || 'Не указано'}</td>
+                <td class="phone">${booking.guest_phone || 'Не указан'}</td>
+                <td>
+                    <strong>${checkinDate}</strong><br>
+                    <small>до ${checkoutDate}</small>
+                </td>
+                <td>
+                    👨‍👩‍👧‍👦 ${booking.adults} взр.
+                    ${booking.children > 0 ? `, ${booking.children} дет.` : ''}
+                    ${booking.infants > 0 ? `, ${booking.infants} млад.` : ''}
+                </td>
+                <td><strong>${formatPrice(booking.total_price)}</strong></td>
+                <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                <td>
+                    <div class="booking-actions">
+                        <button class="action-btn btn-view" onclick="viewBooking(${booking.id})" title="Просмотр">
+                            👁️
+                        </button>
+                        ${booking.status === 'pending' ? `
+                            <button class="action-btn btn-confirm" onclick="confirmBooking(${booking.id})" title="Подтвердить">
+                                ✅
+                            </button>
+                            <button class="action-btn btn-cancel" onclick="cancelBooking(${booking.id})" title="Отменить">
+                                ❌
+                            </button>
+                        ` : ''}
+                        ${booking.status === 'confirmed' ? `
+                            <button class="action-btn btn-cancel" onclick="cancelBooking(${booking.id})" title="Отменить">
+                                ❌
+                            </button>
+                        ` : ''}
+                    </div>
+                </td>
+            `;
+            
+            tbody.appendChild(row);
+        });
+        
+        document.getElementById('bookingsTable').style.display = 'table';
+    }
+
+    // Пагинация
+    function renderPagination() {
+        const totalPages = Math.ceil(filteredBookings.length / itemsPerPage);
+        const pagination = document.getElementById('pagination');
+        
+        if (totalPages <= 1) {
+            pagination.style.display = 'none';
+            return;
+        }
+        
+        pagination.style.display = 'flex';
+        pagination.innerHTML = '';
+        
+        // Кнопка "Назад"
+        const prevBtn = createPageBtn('←', currentPage > 1, () => {
+            if (currentPage > 1) {
+                currentPage--;
+                renderTable();
+                renderPagination();
+            }
+        });
+        pagination.appendChild(prevBtn);
+        
+        // Номера страниц
+        const maxVisible = 5;
+        let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+        let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+        
+        if (endPage - startPage + 1 < maxVisible) {
+            startPage = Math.max(1, endPage - maxVisible + 1);
+        }
+        
+        for (let i = startPage; i <= endPage; i++) {
+            const pageBtn = createPageBtn(i, true, () => {
+                currentPage = i;
+                renderTable();
+                renderPagination();
+            });
+            
+            if (i === currentPage) {
+                pageBtn.classList.add('active');
+            }
+            
+            pagination.appendChild(pageBtn);
+        }
+        
+        // Кнопка "Вперед"
+        const nextBtn = createPageBtn('→', currentPage < totalPages, () => {
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderTable();
+                renderPagination();
+            }
+        });
+        pagination.appendChild(nextBtn);
+    }
+
+    function createPageBtn(text, enabled, onClick) {
+        const btn = document.createElement('button');
+        btn.className = 'page-btn';
+        btn.textContent = text;
+        btn.onclick = onClick;
+        
+        if (!enabled) {
+            btn.classList.add('disabled');
+            btn.onclick = null;
+        }
+        
+        return btn;
+    }
+
+    // Просмотр деталей бронирования
+    async function viewBooking(bookingId) {
+        try {
+            const booking = await adminFetch(`/api/admin/bookings/${bookingId}`);
+            showBookingDetails(booking);
+        } catch (error) {
+            console.error('Ошибка загрузки деталей:', error);
+            showNotification('Ошибка загрузки деталей: ' + error.message, 'error');
+        }
+    }
+
+    function showBookingDetails(booking) {
+        const modal = document.getElementById('detailsModal');
+        const modalBody = document.getElementById('modalBody');
+        const modalFooter = document.getElementById('modalFooter');
+        
+        document.getElementById('modalBookingId').textContent = `#${booking.id}`;
+        
+        // Форматируем даты
+        const createdDate = formatDateTime(booking.created_at);
+        const checkinDate = formatDate(booking.checkin_date);
+        const checkoutDate = formatDate(booking.checkout_date);
+        const nights = Math.ceil(
+            (new Date(booking.checkout_date) - new Date(booking.checkin_date)) / 
+            (1000 * 60 * 60 * 24)
+        );
+        
+        // Создаем контент модального окна
+        modalBody.innerHTML = `
+            <div class="booking-details">
+                <div class="detail-section">
+                    <h3>📋 Информация о бронировании</h3>
+                    <div class="detail-item">
+                        <span class="detail-label">ID:</span>
+                        <span class="detail-value"><strong>#${booking.id}</strong></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Дата создания:</span>
+                        <span class="detail-value">${createdDate}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Статус:</span>
+                        <span class="detail-value">
+                            <span class="status-badge status-${booking.status}">
+                                ${booking.status === 'pending' ? 'Ожидает' : 
+                                  booking.status === 'confirmed' ? 'Подтверждено' : 'Отменено'}
+                            </span>
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <h3>👤 Данные гостя</h3>
+                    <div class="detail-item">
+                        <span class="detail-label">ФИО:</span>
+                        <span class="detail-value">${booking.guest_name || 'Не указано'}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Телефон:</span>
+                        <span class="detail-value phone">${booking.guest_phone || 'Не указан'}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Email:</span>
+                        <span class="detail-value">${booking.guest_email || 'Не указан'}</span>
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <h3>📅 Даты проживания</h3>
+                    <div class="detail-item">
+                        <span class="detail-label">Заезд:</span>
+                        <span class="detail-value"><strong>${checkinDate}</strong></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Выезд:</span>
+                        <span class="detail-value"><strong>${checkoutDate}</strong></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Ночей:</span>
+                        <span class="detail-value">${nights}</span>
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <h3>👨‍👩‍👧‍👦 Состав гостей</h3>
+                    <div class="detail-item">
+                        <span class="detail-label">Взрослые:</span>
+                        <span class="detail-value">${booking.adults}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Дети (2-13 лет):</span>
+                        <span class="detail-value">${booking.children}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Младенцы (до 2 лет):</span>
+                        <span class="detail-value">${booking.infants}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Всего гостей:</span>
+                        <span class="detail-value"><strong>${booking.adults + booking.children}</strong></span>
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <h3>💰 Стоимость</h3>
+                    <div class="detail-item">
+                        <span class="detail-label">Базовая цена:</span>
+                        <span class="detail-value">6,000 ₽/ночь</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Доп. гости:</span>
+                        <span class="detail-value">${Math.max(0, (booking.adults + booking.children) - 2)} × 1,000 ₽/ночь</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Общая стоимость:</span>
+                        <span class="detail-value"><strong>${formatPrice(booking.total_price)}</strong></span>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Кнопки в футере
+        let footerButtons = '';
+        
+        if (booking.status === 'pending') {
+            footerButtons = `
+                <button class="btn btn-secondary" onclick="closeModal()">Закрыть</button>
+                <button class="btn btn-danger" onclick="cancelBooking(${booking.id}, true)">Отменить</button>
+                <button class="btn btn-primary" onclick="confirmBooking(${booking.id}, true)">Подтвердить</button>
+            `;
+        } else if (booking.status === 'confirmed') {
+            footerButtons = `
+                <button class="btn btn-secondary" onclick="closeModal()">Закрыть</button>
+                <button class="btn btn-danger" onclick="cancelBooking(${booking.id}, true)">Отменить</button>
+            `;
+        } else {
+            footerButtons = `
+                <button class="btn btn-secondary" onclick="closeModal()">Закрыть</button>
+            `;
+        }
+        
+        modalFooter.innerHTML = footerButtons;
+        modal.style.display = 'flex';
+    }
+
+    // Подтверждение бронирования
+    async function confirmBooking(bookingId, fromModal = false) {
+        if (!confirm('Вы уверены, что хотите подтвердить это бронирование?')) {
+            return;
+        }
+        
+        try {
+            await adminFetch(`/api/admin/bookings/${bookingId}/confirm`, {
+                method: 'POST'
+            });
+            
+            showNotification('Бронирование успешно подтверждено!', 'success');
+            
+            if (fromModal) {
+                closeModal();
+            }
+            
+            await loadBookings();
+            
+        } catch (error) {
+            console.error('Ошибка подтверждения:', error);
+            showNotification('Ошибка подтверждения: ' + error.message, 'error');
+        }
+    }
+
+    // Отмена бронирования
+    async function cancelBooking(bookingId, fromModal = false) {
+        const reason = prompt('Укажите причину отмены (опционально):');
+        
+        if (reason === null) {
+            return;
+        }
+        
+        try {
+            await adminFetch(`/api/admin/bookings/${bookingId}/cancel`, {
+                method: 'POST',
+                body: JSON.stringify({ reason: reason || '' })
+            });
+            
+            showNotification('Бронирование успешно отменено!', 'success');
+            
+            if (fromModal) {
+                closeModal();
+            }
+            
+            await loadBookings();
+            
+        } catch (error) {
+            console.error('Ошибка отмены:', error);
+            showNotification('Ошибка отмены: ' + error.message, 'error');
+        }
+    }
+
+    // Закрытие модального окна
+    function closeModal() {
+        document.getElementById('detailsModal').style.display = 'none';
+    }
+
+    // Обновление данных
+    function refreshBookings() {
+        loadBookings();
+        showNotification('Данные обновлены', 'success');
+    }
+
+    // Экспорт в Excel
+    function exportToExcel() {
+        showNotification('Экспорт в Excel в разработке', 'warning');
+    }
+
+    // ========== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==========
+
+    function formatDate(dateString) {
+        try {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('ru-RU', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+        } catch (e) {
+            return dateString;
+        }
+    }
+
+    function formatDateTime(dateString) {
+        try {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('ru-RU', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        } catch (e) {
+            return dateString;
+        }
+    }
+
+    function formatPrice(price) {
+        try {
+            return new Intl.NumberFormat('ru-RU', {
+                style: 'currency',
+                currency: 'RUB',
+                minimumFractionDigits: 0
+            }).format(price);
+        } catch (e) {
+            return price + ' ₽';
+        }
+    }
+
+    function showLoading(show) {
+        document.getElementById('loading').style.display = show ? 'block' : 'none';
+    }
+
+    function showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.textContent = message;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            if (notification.parentNode) {
+                document.body.removeChild(notification);
+            }
+        }, 3000);
+    }
+
+    function setupEventListeners() {
+        // Закрытие модального окна по клику вне его
+        document.getElementById('detailsModal').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) {
+                closeModal();
+            }
+        });
+        
+        // Закрытие по ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+    }
+
+    // ========== ОТЛАДКА ==========
+    
+    // Экспортируем функции для тестирования в консоли
+    window.debugAdmin = {
+        getAuthHeaders,
+        adminFetch,
+        loadBookings,
+        viewBooking: (id) => viewBooking(id || 1),
+        testConnection,
+        testHealth: () => adminFetch('/api/admin/health'),
+        testBookings: () => adminFetch('/api/admin/bookings').then(data => data.slice(0, 2))
+    };
+
+    console.log('🔧 Для тестирования используйте window.debugAdmin');
+    console.log('   Примеры:');
+    console.log('   - debugAdmin.testHealth()');
+    console.log('   - debugAdmin.testBookings()');
+    console.log('   - debugAdmin.getAuthHeaders()');
+</script>
+</body>
+</html>
