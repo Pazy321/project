@@ -162,11 +162,6 @@
         </a>
       </div>
     </div>
-
-    <!-- Footer -->
-    <p class="text-center text-white/50 text-sm mt-8">
-      © 2024 Lesnoj Glamping. All rights reserved.
-    </p>
   </div>
 </div>
 

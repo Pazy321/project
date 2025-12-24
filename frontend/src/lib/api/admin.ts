@@ -56,11 +56,10 @@ export async function confirmBooking(id: number): Promise<void> {
   await handleResponse<{ success: boolean }>(response);
 }
 
-export async function cancelBooking(id: number, reason?: string): Promise<void> {
+export async function cancelBooking(id: number): Promise<void> {
   const response = await fetch(`${API_BASE}/bookings/${id}/cancel`, {
     method: 'POST',
     credentials: 'include',
-    ...jsonPayload({ reason: reason || '' }),
   });
   await handleResponse<{ success: boolean }>(response);
 }
