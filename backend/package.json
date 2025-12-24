@@ -1,0 +1,37 @@
+{
+  "name": "forest-glamping",
+  "version": "2.0.0",
+  "description": "Forest Glamping Booking System",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc && sh scripts/copy-templates.sh",
+    "start": "node dist/index.js",
+    "dev": "tsx watch src/index.ts",
+    "create-admin": "node dist/cli/create-admin.js",
+    "create-admin:dev": "tsx src/cli/create-admin.ts",
+    "generate-test-bookings": "node dist/cli/generate-test-bookings.js",
+    "generate-test-bookings:dev": "tsx src/cli/generate-test-bookings.ts"
+  },
+  "dependencies": {
+    "@fastify/cookie": "^10.0.0",
+    "@fastify/cors": "^10.0.0",
+    "@fastify/session": "^11.0.1",
+    "awilix": "^12.0.4",
+    "fastify": "^5.0.0",
+    "fastify-plugin": "^5.0.1",
+    "handlebars": "^4.7.8",
+    "mysql2": "^3.15.3",
+    "nodemailer": "^7.0.12",
+    "pino": "^9.5.0",
+    "pino-pretty": "^11.3.0",
+    "sequelize": "^6.37.5",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/handlebars": "^4.0.40",
+    "@types/node": "^22.10.2",
+    "@types/nodemailer": "^7.0.4",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}
