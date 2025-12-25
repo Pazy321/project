@@ -127,8 +127,8 @@
   }
 </script>
 
-<section id="booking" class="py-12 md:py-16 lg:py-20 bg-background-overlay flex justify-center items-center min-h-screen">
-  <div class="container mx-auto px-4 md:px-6 lg:px-8">
+<section id="booking" class="relative py-12 md:py-16 lg:py-20 flex justify-center items-center min-h-screen">
+  <div class="relative z-10 container mx-auto px-4 md:px-6 lg:px-8">
     <h2 class="section-title">Бронирование</h2>
     
     <div class="flex justify-center">

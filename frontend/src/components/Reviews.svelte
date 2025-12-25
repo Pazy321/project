@@ -17,11 +17,6 @@
 </script>
 
 <section id="reviews" class="relative py-12 md:py-16 lg:py-20 min-h-[600px] md:min-h-[700px]">
-  <div class="absolute inset-0 z-0">
-    <img src="/static/photos/image bg3.jpg" alt="Reviews background" class="w-full h-full object-cover" />
-    <div class="absolute inset-0 bg-background-overlay"></div>
-  </div>
-  
   <div class="relative z-10 container mx-auto px-4 md:px-6 lg:px-8">
     <p class="text-xl md:text-2xl lg:text-3xl font-extrabold text-center text-white mb-4">Реальные отзывы наших гостей</p>
     <h2 class="section-title">Мы всегда рады видеть вас</h2>

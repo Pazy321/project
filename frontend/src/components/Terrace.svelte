@@ -1,4 +1,4 @@
-<section class="py-16 md:py-20 lg:py-28 bg-gray-100">
+<section class="py-16 md:py-20 lg:py-28">
   <div class="container mx-auto px-4 md:px-6 lg:px-8">
     <h2 class="section-title !text-primary-dark">Большая терраса и мангал</h2>
     

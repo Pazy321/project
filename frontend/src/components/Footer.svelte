@@ -1,5 +1,14 @@
-<footer id="contacts" class="bg-gradient-to-b from-background-darker to-black py-12 md:py-16 lg:py-20">
-  <div class="container mx-auto px-4 md:px-6 lg:px-8">
+<footer id="contacts" class="relative py-12 md:py-16 lg:py-20">
+  <!-- Background image -->
+  <div class="absolute inset-0 z-0">
+    <div 
+      class="w-full h-full"
+      style="background-image: url('/static/photos/image 5.png'); background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: fixed;"
+    ></div>
+    <div class="absolute inset-0 bg-black/50"></div>
+  </div>
+  
+  <div class="relative z-10 container mx-auto px-4 md:px-6 lg:px-8">
     <div class="flex flex-col md:flex-row justify-between items-center md:items-start gap-8 md:gap-12 lg:gap-16 max-w-5xl mx-auto">
       <div class="text-center md:text-left">
         <h3 class="text-accent-dark text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-wide mb-4 md:mb-6">Email</h3>

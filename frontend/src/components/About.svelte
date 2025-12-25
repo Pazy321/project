@@ -1,15 +1,4 @@
 <section id="about" class="relative py-16 md:py-20 lg:py-28">
-  <!-- Background image with overlay - covers full section -->
-  <div class="absolute inset-0 z-0">
-    <img 
-      src="/static/photos/image 5.png" 
-      alt="" 
-      class="w-full h-full object-cover object-center"
-      aria-hidden="true"
-    />
-    <div class="absolute inset-0 bg-gradient-to-b from-primary-dark/80 via-primary-dark/70 to-primary-dark/80"></div>
-  </div>
-  
   <div class="relative z-10 container mx-auto px-4 md:px-6 lg:px-8">
     <h2 class="section-title !text-accent mb-4">Частная территория</h2>
     <p class="section-subtitle mb-12 md:mb-16">Просторный дом 52 м²</p>

@@ -12,12 +12,14 @@
       aria-hidden="true"
     />
     <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/60"></div>
+    <!-- Smooth transition gradient at the bottom -->
+    <div class="absolute bottom-0 left-0 right-0 h-80 md:h-96 lg:h-[28rem] bg-gradient-to-b from-transparent via-black/20 to-black/60 pointer-events-none z-10"></div>
   </div>
   
   <!-- Logo -->
   <div class="absolute top-4 left-4 md:top-6 md:left-8 lg:top-8 lg:left-16 xl:left-32 z-20">
-    <div class="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 bg-gray-900/80 backdrop-blur-sm flex items-center justify-center rounded-sm">
-      <img src="/static/photos/Frame 1.png" alt="Forest Home Logo" class="w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20" />
+    <div class="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 bg-gray-900/80 backdrop-blur-sm flex items-center justify-center overflow-hidden rounded-xl">
+      <img src="/static/photos/Frame 1.png" alt="Forest Home Logo" class="w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 rounded-xl" />
     </div>
   </div>
   
