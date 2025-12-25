@@ -1,0 +1,98 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    @apply box-border;
+  }
+  
+  html {
+    @apply scroll-smooth;
+  }
+  
+  body {
+    @apply font-serif bg-white text-gray-900 overflow-x-hidden antialiased m-0 p-0;
+    min-height: 100vh;
+  }
+  
+  img {
+    @apply max-w-full h-auto block;
+  }
+  
+  /* Ensure sections stack correctly */
+  section {
+    @apply relative;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-primary hover:bg-primary-dark text-white font-medium rounded-lg px-5 py-2.5 transition-colors duration-300 cursor-pointer;
+  }
+  
+  .btn-secondary {
+    @apply bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold rounded-lg px-5 py-2.5 transition-colors duration-300 cursor-pointer border border-gray-300;
+  }
+  
+  .section-title {
+    @apply text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold text-center text-accent-dark mb-6 drop-shadow-lg;
+  }
+  
+  .section-subtitle {
+    @apply text-lg md:text-xl lg:text-2xl xl:text-3xl font-extrabold text-center text-white mb-8 md:mb-12;
+  }
+  
+  .form-input {
+    @apply w-full bg-gray-50 rounded-lg border border-gray-300 px-4 py-3 text-base md:text-lg font-bold text-gray-600 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all;
+  }
+  
+  .form-label {
+    @apply block text-gray-800 text-xl md:text-2xl lg:text-3xl font-extrabold mb-2;
+  }
+  
+  /* Background section with image */
+  .section-bg {
+    @apply relative;
+  }
+  
+  .section-bg::before {
+    content: '';
+    @apply absolute inset-0 z-0;
+  }
+  
+  .section-bg > .bg-image {
+    @apply absolute inset-0 w-full h-full object-cover object-center z-0;
+  }
+  
+  .section-bg > .bg-overlay {
+    @apply absolute inset-0 z-[1];
+  }
+  
+  .section-bg > .content {
+    @apply relative z-10;
+  }
+}
+
+@layer utilities {
+  /* Hide scrollbar but allow scrolling */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Text shadow for better readability on images */
+  .text-shadow {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  }
+  
+  .text-shadow-lg {
+    text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.6);
+  }
+}
