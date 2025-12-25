@@ -1,4 +1,5 @@
 import { writable, derived, get } from 'svelte/store';
+import { jsonPayload } from '$lib/api/utils';
 
 export interface User {
   id: number;
@@ -52,11 +53,8 @@ async function login(email: string, password: string): Promise<{ success: boolea
   try {
     const response = await fetch('/api/auth/login', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
       credentials: 'include',
-      body: JSON.stringify({ email, password }),
+      ...jsonPayload({ email, password }),
     });
     
     console.log('[Auth] Login response status:', response.status);
