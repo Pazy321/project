@@ -68,13 +68,13 @@ export function formatCalendarDate(date: Date): string {
     month: 'long', 
     weekday: 'short' 
   };
-  return date.toLocaleDateString('en-US', options);
+  return date.toLocaleDateString('ru-RU', options);
 }
 
 export function getMonthYearString(date: Date): string {
   const monthNames = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
+    'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
+    'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'
   ];
   return `${monthNames[date.getMonth()]} ${date.getFullYear()}`;
 }

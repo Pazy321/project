@@ -26,34 +26,34 @@
   $: extraGuests = Math.max(0, ($adults + $children) - 2);
   $: extraPrice = extraGuests * 1000 * nights;
   $: totalPrice = basePrice * nights + extraPrice;
-  $: costDetail = `${basePrice} x ${nights} night${nights > 1 ? 's' : ''}${extraGuests > 0 ? ` + ${extraGuests} extra` : ''}`;
+  $: costDetail = `${basePrice} x ${nights} ${nights === 1 ? 'ночь' : nights < 5 ? 'ночи' : 'ночей'}${extraGuests > 0 ? ` + ${extraGuests} доп.` : ''}`;
 
   $: checkinText = $checkinDate
-    ? $checkinDate.toLocaleDateString('en-US', { day: 'numeric', month: 'long', weekday: 'short' })
+    ? $checkinDate.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', weekday: 'short' })
     : '';
 
   $: checkoutText = $checkoutDate
-    ? $checkoutDate.toLocaleDateString('en-US', { day: 'numeric', month: 'long', weekday: 'short' })
+    ? $checkoutDate.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', weekday: 'short' })
     : '';
 
   // Mutation
   const mutation = createMutation({
     mutationFn: (data: BookingInput) => createBooking(data),
     onSuccess: () => {
-      showToast('Booking created successfully!', 'success');
+      showToast('Бронирование создано успешно!', 'success');
       reset();
       guestName = '';
       guestEmail = '';
       guestPhone = '';
     },
     onError: (error: Error) => {
-      showToast(error.message || 'Booking error', 'error');
+      showToast((error && error.message) ? error.message : 'Ошибка бронирования', 'error');
     },
   });
 
   function showToast(message: string, type: 'success' | 'error' | 'info') {
     toasts.add({
-      title: message,
+      description: message,
       type,
       duration: type === 'error' ? 5000 : 3000,
       theme: 'light',
@@ -86,28 +86,28 @@
     e.preventDefault();
 
     if (!$checkinDate || !$checkoutDate) {
-      showToast('Please select check-in and check-out dates', 'error');
+      showToast('Пожалуйста, выберите даты заезда и выезда', 'error');
       return;
     }
 
     if (!guestName.trim()) {
-      showToast('Please enter your name', 'error');
+      showToast('Пожалуйста, введите ваше имя', 'error');
       return;
     }
 
     if (!guestEmail.trim()) {
-      showToast('Please enter your email', 'error');
+      showToast('Пожалуйста, введите ваш email', 'error');
       return;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(guestEmail.trim())) {
-      showToast('Please enter a valid email', 'error');
+      showToast('Пожалуйста, введите корректный email', 'error');
       return;
     }
 
     if (!guestPhone.trim()) {
-      showToast('Please enter your phone number', 'error');
+      showToast('Пожалуйста, введите ваш номер телефона', 'error');
       return;
     }
 
@@ -129,14 +129,14 @@
 
 <section id="booking" class="py-12 md:py-16 lg:py-20 bg-background-overlay flex justify-center items-center min-h-screen">
   <div class="container mx-auto px-4 md:px-6 lg:px-8">
-    <h2 class="section-title">Booking</h2>
+    <h2 class="section-title">Бронирование</h2>
     
     <div class="flex justify-center">
       <div class="bg-gray-300 rounded-3xl p-6 md:p-8 lg:p-10 w-full max-w-3xl">
         <form on:submit={handleSubmit} class="flex flex-col gap-6 md:gap-8">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
             <div class="flex flex-col">
-              <label for="checkin" class="form-label">Check-in</label>
+              <label for="checkin" class="form-label">Заезд</label>
               <button
                 type="button"
                 class="date-input calendar-trigger relative cursor-pointer text-left"
@@ -160,7 +160,7 @@
             </div>
             
             <div class="flex flex-col">
-              <label for="checkout" class="form-label">Check-out</label>
+              <label for="checkout" class="form-label">Выезд</label>
               <button
                 type="button"
                 class="date-input calendar-trigger relative cursor-pointer text-left"
@@ -185,7 +185,7 @@
           </div>
           
           <div class="flex flex-col">
-            <label for="guests" class="form-label">Guests</label>
+            <label for="guests" class="form-label">Гости</label>
             <button
               type="button"
               class="guests-input relative cursor-pointer text-left"
@@ -195,7 +195,7 @@
                 type="text"
                 id="guests"
                 class="form-input cursor-pointer"
-                placeholder="2 adults"
+                placeholder="2 взрослых"
                 readonly
                 value={$guestsText}
                 tabindex="-1"
@@ -210,12 +210,12 @@
           
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
             <div class="flex flex-col">
-              <label for="guestName" class="form-label">Full Name</label>
+              <label for="guestName" class="form-label">Полное имя</label>
               <input
                 type="text"
                 id="guestName"
                 class="form-input"
-                placeholder="Enter your name"
+                placeholder="Введите ваше имя"
                 bind:value={guestName}
                 required
               />
@@ -235,7 +235,7 @@
           </div>
           
           <div class="flex flex-col">
-            <label for="phone" class="form-label">Phone</label>
+            <label for="phone" class="form-label">Телефон</label>
             <input
               type="tel"
               id="phone"
@@ -247,7 +247,7 @@
           </div>
           
           <div class="flex flex-col">
-            <label class="form-label">Price</label>
+            <label class="form-label">Цена</label>
             <div class="flex justify-between items-center bg-gray-50 rounded-lg p-4">
               <span class="text-gray-500 text-lg md:text-xl lg:text-2xl font-bold font-sans">{costDetail}</span>
               <span class="text-accent-dark text-2xl md:text-3xl lg:text-4xl font-bold font-sans">{totalPrice}₽</span>
@@ -259,7 +259,7 @@
             class="bg-background-dark shadow-lg rounded-2xl border-none py-4 md:py-5 text-white text-2xl md:text-3xl lg:text-4xl font-bold font-sans tracking-wider cursor-pointer mt-4 hover:bg-background-darker transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={$mutation.isPending}
           >
-            {$mutation.isPending ? 'Sending...' : 'Book Now'}
+            {$mutation.isPending ? 'Отправка...' : 'Забронировать'}
           </button>
         </form>
       </div>

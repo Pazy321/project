@@ -1,6 +1,6 @@
 <section id="gallery" class="py-12 md:py-16 lg:py-20">
   <div class="container mx-auto px-4 md:px-6 lg:px-8">
-    <h2 class="section-title">Photo Gallery</h2>
+    <h2 class="section-title">Фотогалерея</h2>
     
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 max-w-7xl mx-auto">
       <div class="rounded-2xl overflow-hidden lg:row-span-2">
@@ -22,7 +22,7 @@
   </div>
 
   <div class="container mx-auto px-4 md:px-6 lg:px-8 mt-12 md:mt-16">
-    <h2 class="section-title">Videos</h2>
+    <h2 class="section-title">Видео</h2>
     
     <div class="flex flex-col md:flex-row justify-center gap-8 md:gap-16 lg:gap-24 max-w-7xl mx-auto">
       <div class="relative rounded-2xl overflow-hidden group cursor-pointer">

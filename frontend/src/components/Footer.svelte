@@ -7,7 +7,7 @@
       </div>
       
       <div class="text-center md:text-left">
-        <h3 class="text-accent-dark text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-wide mb-4 md:mb-6">Social</h3>
+        <h3 class="text-accent-dark text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-wide mb-4 md:mb-6">Соцсети</h3>
         <div class="flex gap-6 md:gap-8 lg:gap-10 justify-center md:justify-start">
           <a href="#" class="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 relative block">
             <div class="absolute w-14 h-14 md:w-16 md:h-16 lg:w-20 lg:h-20 top-1 left-1 bg-gradient-to-b from-blue-400 to-blue-600 rounded-full"></div>

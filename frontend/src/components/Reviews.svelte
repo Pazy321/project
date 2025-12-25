@@ -23,14 +23,14 @@
   </div>
   
   <div class="relative z-10 container mx-auto px-4 md:px-6 lg:px-8">
-    <p class="text-xl md:text-2xl lg:text-3xl font-extrabold text-center text-white mb-4">Real reviews from our guests</p>
-    <h2 class="section-title">We're always happy to see you</h2>
+    <p class="text-xl md:text-2xl lg:text-3xl font-extrabold text-center text-white mb-4">Реальные отзывы наших гостей</p>
+    <h2 class="section-title">Мы всегда рады видеть вас</h2>
     
     <div class="flex items-center justify-center gap-4 md:gap-6 max-w-7xl mx-auto">
       <button
         on:click={scrollPrev}
         class="slider-arrow-prev w-12 h-12 md:w-16 md:h-16 bg-primary-dark rounded-full flex items-center justify-center hover:bg-primary transition-colors z-10"
-        aria-label="Previous review"
+        aria-label="Предыдущий отзыв"
       >
         <svg class="w-6 h-6 text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
@@ -50,7 +50,7 @@
             <h3 class="text-accent-dark text-2xl md:text-3xl lg:text-4xl font-bold font-sans">Maxim</h3>
           </div>
           <p class="text-sm md:text-base font-bold font-sans mb-5 leading-relaxed">
-            Everything was great! Amazing vacation, recommend to everyone! The hosts were wonderful, the house is well thought out to the smallest detail! Cozy, smells like wood, everything you need for comfortable living!
+            Всё было отлично! Потрясающий отдых, рекомендую всем! Хозяева замечательные, дом продуман до мелочей! Уютно, пахнет деревом, всё необходимое для комфортного проживания!
           </p>
           <div class="flex gap-4 md:gap-5">
             <img src="/static/photos/image.jpg" alt="Review photo 1" class="w-24 h-14 md:w-32 md:h-18 rounded-lg object-cover" />
@@ -66,7 +66,7 @@
             <h3 class="text-accent-dark text-2xl md:text-3xl lg:text-4xl font-bold font-sans">Alina</h3>
           </div>
           <p class="text-sm md:text-base font-bold font-sans mb-5 leading-relaxed">
-            Very cozy warm house, lots of beautiful places nearby within walking distance, really liked everything. Recommend, will come again!
+            Очень уютный теплый дом, много красивых мест поблизости в пешей доступности, всё очень понравилось. Рекомендую, приедем еще раз!
           </p>
           <div class="flex gap-4 md:gap-5">
             <img src="/static/photos/image otziv.jpg" alt="Review photo" class="w-24 h-14 md:w-32 md:h-18 rounded-lg object-cover" />
@@ -80,7 +80,7 @@
             <h3 class="text-accent-dark text-2xl md:text-3xl lg:text-4xl font-bold font-sans">Vladislav</h3>
           </div>
           <p class="text-sm md:text-base font-bold font-sans mb-5 leading-relaxed">
-            Vacationed with my wife on May holidays. Everything went great, really liked it. Special thanks to the owners, separate gorgeous house. Friendly, ready to help with any questions.
+            Отдыхали с женой на майские праздники. Всё прошло отлично, очень понравилось. Отдельное спасибо хозяевам, отдельный шикарный дом. Дружелюбные, готовы помочь с любыми вопросами.
           </p>
         </article>
       </div>
@@ -88,7 +88,7 @@
       <button
         on:click={scrollNext}
         class="slider-arrow-next w-12 h-12 md:w-16 md:h-16 bg-primary-dark rounded-full flex items-center justify-center hover:bg-primary transition-colors z-10"
-        aria-label="Next review"
+        aria-label="Следующий отзыв"
       >
         <svg class="w-6 h-6 text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>

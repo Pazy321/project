@@ -73,7 +73,7 @@ async function login(email: string, password: string): Promise<{ success: boolea
       return { success: false, error: errorMessage };
     }
   } catch (err) {
-    const errorMessage = err instanceof Error ? err.message : 'Network error';
+    const errorMessage = (err instanceof Error && err.message) ? err.message : 'Ошибка сети';
     error.set(errorMessage);
     console.error('[Auth] Login error:', err);
     return { success: false, error: errorMessage };

@@ -11,8 +11,8 @@
   </div>
   
   <div class="relative z-10 container mx-auto px-4 md:px-6 lg:px-8">
-    <h2 class="section-title !text-accent mb-4">Private Territory</h2>
-    <p class="section-subtitle mb-12 md:mb-16">Spacious 52 m² house</p>
+    <h2 class="section-title !text-accent mb-4">Частная территория</h2>
+    <p class="section-subtitle mb-12 md:mb-16">Просторный дом 52 м²</p>
     
     <!-- Three column grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 lg:gap-10 max-w-7xl mx-auto">
@@ -28,7 +28,7 @@
         </div>
         <div class="bg-accent-dark rounded-xl p-4 md:p-5 mt-4 shadow-lg">
           <h3 class="text-white text-base md:text-lg lg:text-xl font-bold text-center">
-            Hot SPA tub with hydromassage
+            Горячая SPA-ванна с гидромассажем
           </h3>
         </div>
       </div>
@@ -64,7 +64,7 @@
         </div>
         <div class="bg-accent-dark rounded-xl p-4 md:p-5 mt-4 shadow-lg">
           <h3 class="text-white text-base md:text-lg lg:text-xl font-bold text-center">
-            All personal care items
+            Все предметы личной гигиены
           </h3>
         </div>
       </div>

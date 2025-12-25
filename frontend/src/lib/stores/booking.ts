@@ -43,10 +43,19 @@ const guestsText = derived(
   [adults, children, infants],
   ([$adults, $children, $infants]) => {
     const parts: string[] = [];
-    if ($adults > 0) parts.push(`${$adults} adult${$adults > 1 ? 's' : ''}`);
-    if ($children > 0) parts.push(`${$children} child${$children > 1 ? 'ren' : ''}`);
-    if ($infants > 0) parts.push(`${$infants} infant${$infants > 1 ? 's' : ''}`);
-    return parts.length ? parts.join(', ') : 'Select guests';
+    if ($adults > 0) {
+      const adultText = $adults === 1 ? 'взрослый' : $adults < 5 ? 'взрослых' : 'взрослых';
+      parts.push(`${$adults} ${adultText}`);
+    }
+    if ($children > 0) {
+      const childText = $children === 1 ? 'ребенок' : $children < 5 ? 'ребенка' : 'детей';
+      parts.push(`${$children} ${childText}`);
+    }
+    if ($infants > 0) {
+      const infantText = $infants === 1 ? 'младенец' : $infants < 5 ? 'младенца' : 'младенцев';
+      parts.push(`${$infants} ${infantText}`);
+    }
+    return parts.length ? parts.join(', ') : 'Выберите гостей';
   }
 );
 

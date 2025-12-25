@@ -12,21 +12,22 @@
     e.preventDefault();
     
     if (!email.trim()) {
-      toasts.add({ title: 'Please enter email', type: 'error', duration: 3000, theme: 'light' });
+      toasts.add({ description: 'Пожалуйста, введите email', type: 'error', duration: 3000, theme: 'light' });
       return;
     }
     
     if (!password) {
-      toasts.add({ title: 'Please enter password', type: 'error', duration: 3000, theme: 'light' });
+      toasts.add({ description: 'Пожалуйста, введите пароль', type: 'error', duration: 3000, theme: 'light' });
       return;
     }
 
     const result = await authStore.login(email, password);
     
     if (result.success) {
-      toasts.add({ title: 'Login successful', type: 'success', duration: 2000, theme: 'light' });
+      toasts.add({ description: 'Вход выполнен успешно', type: 'success', duration: 2000, theme: 'light' });
     } else {
-      toasts.add({ title: result.error || 'Login failed', type: 'error', duration: 4000, theme: 'light' });
+      const errorMsg = result.error && result.error.trim() ? result.error : 'Ошибка входа';
+      toasts.add({ description: errorMsg, type: 'error', duration: 4000, theme: 'light' });
     }
   }
 
@@ -47,12 +48,12 @@
         </svg>
       </div>
       <h1 class="text-3xl font-bold text-white mb-2">Lesnoj Glamping</h1>
-      <p class="text-white/70">Admin Panel</p>
+      <p class="text-white/70">Панель администратора</p>
     </div>
 
     <!-- Login Form -->
     <div class="bg-white rounded-2xl shadow-2xl p-8">
-      <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Sign In</h2>
+      <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Вход</h2>
       
       <form on:submit={handleSubmit} class="space-y-5">
         <!-- Email -->
@@ -114,7 +115,7 @@
               type="button"
               class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
               on:click={() => showPassword = !showPassword}
-              aria-label={showPassword ? 'Hide password' : 'Show password'}
+              aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'}
             >
               {#if showPassword}
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -148,9 +149,9 @@
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
-            Signing in...
+            Вход...
           {:else}
-            Sign In
+            Войти
           {/if}
         </button>
       </form>
@@ -158,7 +159,7 @@
       <!-- Back to home -->
       <div class="mt-6 text-center">
         <a href="/" class="text-sm text-gray-500 hover:text-primary transition-colors">
-          ← Back to website
+          ← Вернуться на сайт
         </a>
       </div>
     </div>

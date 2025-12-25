@@ -101,7 +101,7 @@
         class="w-10 h-10 md:w-11 md:h-11 bg-primary rounded-full text-white border-none text-xl md:text-2xl cursor-pointer flex items-center justify-center hover:bg-primary-dark transition-colors"
         type="button"
         on:click={prevMonth}
-        aria-label="Previous month"
+        aria-label="Предыдущий месяц"
       >
         ‹
       </button>
@@ -112,20 +112,20 @@
         class="w-10 h-10 md:w-11 md:h-11 bg-primary rounded-full text-white border-none text-xl md:text-2xl cursor-pointer flex items-center justify-center hover:bg-primary-dark transition-colors"
         type="button"
         on:click={nextMonth}
-        aria-label="Next month"
+        aria-label="Следующий месяц"
       >
         ›
       </button>
     </div>
     
     <div class="grid grid-cols-7 gap-1 md:gap-2 mb-3 text-center font-bold text-primary-dark text-xs md:text-sm">
-      <div>Mon</div>
-      <div>Tue</div>
-      <div>Wed</div>
-      <div>Thu</div>
-      <div>Fri</div>
-      <div>Sat</div>
-      <div>Sun</div>
+      <div>Пн</div>
+      <div>Вт</div>
+      <div>Ср</div>
+      <div>Чт</div>
+      <div>Пт</div>
+      <div>Сб</div>
+      <div>Вс</div>
     </div>
     
     <div class="grid grid-cols-7 gap-1 md:gap-2 mb-4 text-primary-darker" role="grid">
@@ -135,7 +135,7 @@
           class={getDayClasses(day)}
           disabled={day.isPast || !day.isCurrentMonth}
           on:click={() => selectDate(day)}
-          aria-label={day.date.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
+          aria-label={day.date.toLocaleDateString('ru-RU', { weekday: 'long', month: 'long', day: 'numeric' })}
           aria-selected={day.isSelected}
         >
           {day.day}
@@ -144,7 +144,7 @@
     </div>
     
     <div class="text-center mb-4 p-3 bg-gray-100 rounded-lg text-sm">
-      <span class="text-gray-600">Selected: </span>
+      <span class="text-gray-600">Выбрано: </span>
       <strong class="text-primary-dark font-bold">{selectedDateText}</strong>
     </div>
     
@@ -154,7 +154,7 @@
         type="button"
         on:click={cancel}
       >
-        Cancel
+        Отмена
       </button>
       <button
         class="flex-1 py-3 border-none rounded-lg cursor-pointer font-bold text-sm md:text-base bg-primary text-white hover:bg-primary-dark transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed disabled:opacity-60"
@@ -162,7 +162,7 @@
         disabled={!selectedDate}
         on:click={confirm}
       >
-        Select
+        Выбрать
       </button>
     </div>
   </div>

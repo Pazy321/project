@@ -11,7 +11,7 @@
   function formatDate(dateString: string): string {
     try {
       const date = new Date(dateString);
-      return date.toLocaleDateString('en-US', { day: '2-digit', month: '2-digit', year: 'numeric' });
+      return date.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' });
     } catch (e) {
       return dateString;
     }
@@ -31,9 +31,9 @@
 
   function getStatusText(status: string): string {
     const statusMap: Record<string, string> = {
-      pending: 'Pending',
-      confirmed: 'Confirmed',
-      cancelled: 'Cancelled',
+      pending: 'Ожидает',
+      confirmed: 'Подтверждено',
+      cancelled: 'Отменено',
     };
     return statusMap[status] || status;
   }
@@ -43,23 +43,23 @@
   {#if isLoading}
     <div class="text-center py-10 text-gray-600 text-base md:text-lg">
       <div class="inline-block w-10 h-10 md:w-12 md:h-12 border-4 border-gray-200 border-t-primary rounded-full animate-spin mb-4"></div>
-      <p>Loading bookings...</p>
+      <p>Загрузка бронирований...</p>
     </div>
   {:else if pageBookings.length === 0}
-    <div class="text-center py-10 text-gray-600 text-base md:text-lg">No bookings found</div>
+    <div class="text-center py-10 text-gray-600 text-base md:text-lg">Бронирования не найдены</div>
   {:else}
     <table class="w-full border-collapse mt-5 text-sm md:text-base">
       <thead>
         <tr>
           <th class="bg-gray-50 px-4 py-4 text-left font-semibold text-gray-700 border-b-2 border-gray-200 sticky top-0">ID</th>
-          <th class="bg-gray-50 px-4 py-4 text-left font-semibold text-gray-700 border-b-2 border-gray-200 sticky top-0">Created</th>
-          <th class="bg-gray-50 px-4 py-4 text-left font-semibold text-gray-700 border-b-2 border-gray-200 sticky top-0">Guest</th>
-          <th class="bg-gray-50 px-4 py-4 text-left font-semibold text-gray-700 border-b-2 border-gray-200 sticky top-0">Phone</th>
-          <th class="bg-gray-50 px-4 py-4 text-left font-semibold text-gray-700 border-b-2 border-gray-200 sticky top-0">Dates</th>
-          <th class="bg-gray-50 px-4 py-4 text-left font-semibold text-gray-700 border-b-2 border-gray-200 sticky top-0">Guests</th>
-          <th class="bg-gray-50 px-4 py-4 text-left font-semibold text-gray-700 border-b-2 border-gray-200 sticky top-0">Price</th>
-          <th class="bg-gray-50 px-4 py-4 text-left font-semibold text-gray-700 border-b-2 border-gray-200 sticky top-0">Status</th>
-          <th class="bg-gray-50 px-4 py-4 text-left font-semibold text-gray-700 border-b-2 border-gray-200 sticky top-0">Actions</th>
+          <th class="bg-gray-50 px-4 py-4 text-left font-semibold text-gray-700 border-b-2 border-gray-200 sticky top-0">Создано</th>
+          <th class="bg-gray-50 px-4 py-4 text-left font-semibold text-gray-700 border-b-2 border-gray-200 sticky top-0">Гость</th>
+          <th class="bg-gray-50 px-4 py-4 text-left font-semibold text-gray-700 border-b-2 border-gray-200 sticky top-0">Телефон</th>
+          <th class="bg-gray-50 px-4 py-4 text-left font-semibold text-gray-700 border-b-2 border-gray-200 sticky top-0">Даты</th>
+          <th class="bg-gray-50 px-4 py-4 text-left font-semibold text-gray-700 border-b-2 border-gray-200 sticky top-0">Гости</th>
+          <th class="bg-gray-50 px-4 py-4 text-left font-semibold text-gray-700 border-b-2 border-gray-200 sticky top-0">Цена</th>
+          <th class="bg-gray-50 px-4 py-4 text-left font-semibold text-gray-700 border-b-2 border-gray-200 sticky top-0">Статус</th>
+          <th class="bg-gray-50 px-4 py-4 text-left font-semibold text-gray-700 border-b-2 border-gray-200 sticky top-0">Действия</th>
         </tr>
       </thead>
       <tbody>
@@ -67,14 +67,14 @@
           <tr class="text-black">
             <td class="px-4 py-4 border-b border-gray-200"><strong>#{booking.id}</strong></td>
             <td class="px-4 py-4 border-b border-gray-200">{formatDate(booking.created_at)}</td>
-            <td class="px-4 py-4 border-b border-gray-200">{booking.guest_name || 'Not specified'}</td>
-            <td class="px-4 py-4 border-b border-gray-200">{booking.guest_phone || 'Not specified'}</td>
+            <td class="px-4 py-4 border-b border-gray-200">{booking.guest_name || 'Не указано'}</td>
+            <td class="px-4 py-4 border-b border-gray-200">{booking.guest_phone || 'Не указано'}</td>
             <td class="px-4 py-4 border-b border-gray-200">
               <strong>{formatDate(booking.checkin_date)}</strong><br />
-              <small>to {formatDate(booking.checkout_date)}</small>
+              <small>до {formatDate(booking.checkout_date)}</small>
             </td>
             <td class="px-4 py-4 border-b border-gray-200">
-              {booking.adults} adults{booking.children > 0 ? `, ${booking.children} children` : ''}
+              {booking.adults} {booking.adults === 1 ? 'взрослый' : 'взрослых'}{booking.children > 0 ? `, ${booking.children} ${booking.children === 1 ? 'ребенок' : booking.children < 5 ? 'ребенка' : 'детей'}` : ''}
             </td>
             <td class="px-4 py-4 border-b border-gray-200"><strong>{formatPrice(booking.total_price)}</strong></td>
             <td class="px-4 py-4 border-b border-gray-200">
@@ -82,12 +82,12 @@
             </td>
             <td class="px-4 py-4 border-b border-gray-200">
               <div class="booking-actions">
-                <button class="action-btn btn-view" on:click={() => handleViewBooking(booking)} title="View">V</button>
+                <button class="action-btn btn-view" on:click={() => handleViewBooking(booking)} title="Просмотр">П</button>
                 {#if booking.status === 'pending'}
-                  <button class="action-btn btn-confirm" on:click={() => handleConfirm(booking.id)} title="Confirm">C</button>
-                  <button class="action-btn btn-cancel" on:click={() => handleCancel(booking.id)} title="Cancel">X</button>
+                  <button class="action-btn btn-confirm" on:click={() => handleConfirm(booking.id)} title="Подтвердить">П</button>
+                  <button class="action-btn btn-cancel" on:click={() => handleCancel(booking.id)} title="Отменить">О</button>
                 {:else if booking.status === 'confirmed'}
-                  <button class="action-btn btn-cancel" on:click={() => handleCancel(booking.id)} title="Cancel">X</button>
+                  <button class="action-btn btn-cancel" on:click={() => handleCancel(booking.id)} title="Отменить">О</button>
                 {/if}
               </div>
             </td>

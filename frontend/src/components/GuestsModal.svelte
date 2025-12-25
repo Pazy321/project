@@ -72,7 +72,7 @@
   >
     <div class="mb-5">
       <h3 id="guests-title" class="text-primary-dark text-center text-lg md:text-xl font-bold m-0">
-        Select number of guests
+        Выберите количество гостей
       </h3>
     </div>
     
@@ -80,15 +80,15 @@
       <!-- Adults -->
       <div class="flex justify-between items-center py-4 border-b border-gray-200">
         <div class="flex flex-col">
-          <span class="font-bold text-primary-dark mb-1 text-base md:text-lg">Adults</span>
-          <span class="text-xs md:text-sm text-gray-600">14+ years</span>
+          <span class="font-bold text-primary-dark mb-1 text-base md:text-lg">Взрослые</span>
+          <span class="text-xs md:text-sm text-gray-600">14+ лет</span>
         </div>
         <div class="flex items-center gap-4">
           <button
             class="w-11 h-11 border-2 border-primary bg-white text-primary rounded-full text-lg font-bold cursor-pointer flex items-center justify-center hover:bg-primary hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={tempAdults <= 1}
             on:click={() => decrement('adults')}
-            aria-label="Decrease adults"
+            aria-label="Уменьшить количество взрослых"
           >
             −
           </button>
@@ -99,7 +99,7 @@
             class="w-11 h-11 border-2 border-primary bg-white text-primary rounded-full text-lg font-bold cursor-pointer flex items-center justify-center hover:bg-primary hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={tempAdults >= 6}
             on:click={() => increment('adults')}
-            aria-label="Increase adults"
+            aria-label="Увеличить количество взрослых"
           >
             +
           </button>
@@ -109,15 +109,15 @@
       <!-- Children -->
       <div class="flex justify-between items-center py-4 border-b border-gray-200">
         <div class="flex flex-col">
-          <span class="font-bold text-primary-dark mb-1 text-base md:text-lg">Children</span>
-          <span class="text-xs md:text-sm text-gray-600">2-13 years</span>
+          <span class="font-bold text-primary-dark mb-1 text-base md:text-lg">Дети</span>
+          <span class="text-xs md:text-sm text-gray-600">2-13 лет</span>
         </div>
         <div class="flex items-center gap-4">
           <button
             class="w-11 h-11 border-2 border-primary bg-white text-primary rounded-full text-lg font-bold cursor-pointer flex items-center justify-center hover:bg-primary hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={tempChildren <= 0}
             on:click={() => decrement('children')}
-            aria-label="Decrease children"
+            aria-label="Уменьшить количество детей"
           >
             −
           </button>
@@ -128,7 +128,7 @@
             class="w-11 h-11 border-2 border-primary bg-white text-primary rounded-full text-lg font-bold cursor-pointer flex items-center justify-center hover:bg-primary hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={tempChildren >= 4}
             on:click={() => increment('children')}
-            aria-label="Increase children"
+            aria-label="Увеличить количество детей"
           >
             +
           </button>
@@ -138,15 +138,15 @@
       <!-- Infants -->
       <div class="flex justify-between items-center py-4">
         <div class="flex flex-col">
-          <span class="font-bold text-primary-dark mb-1 text-base md:text-lg">Infants</span>
-          <span class="text-xs md:text-sm text-gray-600">0-2 years</span>
+          <span class="font-bold text-primary-dark mb-1 text-base md:text-lg">Младенцы</span>
+          <span class="text-xs md:text-sm text-gray-600">0-2 года</span>
         </div>
         <div class="flex items-center gap-4">
           <button
             class="w-11 h-11 border-2 border-primary bg-white text-primary rounded-full text-lg font-bold cursor-pointer flex items-center justify-center hover:bg-primary hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={tempInfants <= 0}
             on:click={() => decrement('infants')}
-            aria-label="Decrease infants"
+            aria-label="Уменьшить количество младенцев"
           >
             −
           </button>
@@ -157,7 +157,7 @@
             class="w-11 h-11 border-2 border-primary bg-white text-primary rounded-full text-lg font-bold cursor-pointer flex items-center justify-center hover:bg-primary hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={tempInfants >= 2}
             on:click={() => increment('infants')}
-            aria-label="Increase infants"
+            aria-label="Увеличить количество младенцев"
           >
             +
           </button>
@@ -167,11 +167,11 @@
     
     <div class="bg-gray-100 p-4 rounded-lg mb-5">
       <div class="flex justify-between mb-2 text-base md:text-lg text-primary-darker">
-        <strong>Total guests:</strong>
+        <strong>Всего гостей:</strong>
         <span>{total}</span>
       </div>
       <div class="text-xs md:text-sm text-gray-600 text-center">
-        <small>Extra guest fee: 1000₽/night</small>
+        <small>Доплата за дополнительного гостя: 1000₽/ночь</small>
       </div>
     </div>
     
@@ -181,14 +181,14 @@
         type="button"
         on:click={cancel}
       >
-        Cancel
+        Отмена
       </button>
       <button
         class="flex-1 py-3 border-none rounded-lg cursor-pointer font-bold text-sm md:text-base bg-primary text-white hover:bg-primary-dark transition-colors"
         type="button"
         on:click={confirm}
       >
-        Apply
+        Применить
       </button>
     </div>
   </div>

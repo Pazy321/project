@@ -22,16 +22,19 @@
 
   // Local state for bookings (simpler than TanStack Query for this use case)
   let bookingsData: Booking[] = [];
-  let bookingsLoading = true;
+  let bookingsLoading = false;
   let bookingsError: string | null = null;
+  let hasFetched = false;
 
   async function fetchBookings() {
+    if (bookingsLoading) return; // Prevent concurrent requests
     bookingsLoading = true;
     bookingsError = null;
     try {
       bookingsData = await getBookings();
+      hasFetched = true;
     } catch (err) {
-      bookingsError = err instanceof Error ? err.message : 'Failed to load bookings';
+      bookingsError = err instanceof Error && err.message ? err.message : 'Не удалось загрузить бронирования';
     } finally {
       bookingsLoading = false;
     }
@@ -45,6 +48,11 @@
     }
   });
 
+  // Fetch bookings when authentication state changes to authenticated (after login)
+  $: if ($isAuthenticated && !$authLoading && !hasFetched && !bookingsLoading) {
+    fetchBookings();
+  }
+
   $: bookings = bookingsData;
   $: isLoading = bookingsLoading;
 
@@ -53,12 +61,13 @@
     try {
       await confirmBooking(id);
       await fetchBookings();
-      showToast('Booking confirmed!', 'success');
+      showToast('Бронирование подтверждено!', 'success');
       if (showDetailsModal) {
         showDetailsModal = false;
       }
     } catch (err) {
-      showToast('Error confirming: ' + (err instanceof Error ? err.message : 'Unknown error'), 'error');
+      const errorMessage = err instanceof Error && err.message ? err.message : 'Неизвестная ошибка';
+      showToast('Ошибка при подтверждении: ' + errorMessage, 'error');
     }
   }
 
@@ -66,18 +75,19 @@
     try {
       await cancelBooking(id);
       await fetchBookings();
-      showToast('Booking cancelled!', 'success');
+      showToast('Бронирование отменено!', 'success');
       if (showDetailsModal) {
         showDetailsModal = false;
       }
     } catch (err) {
-      showToast('Error cancelling: ' + (err instanceof Error ? err.message : 'Unknown error'), 'error');
+      const errorMessage = err instanceof Error && err.message ? err.message : 'Неизвестная ошибка';
+      showToast('Ошибка при отмене: ' + errorMessage, 'error');
     }
   }
 
   function showToast(message: string, type: 'success' | 'error' | 'info') {
     toasts.add({
-      title: message,
+      description: message,
       type,
       duration: type === 'error' ? 5000 : 3000,
       theme: 'light',
@@ -155,16 +165,19 @@
 
   async function refreshBookings() {
     await fetchBookings();
-    showToast('Data refreshed', 'success');
+    showToast('Данные обновлены', 'success');
   }
 
   function exportToExcel() {
-    showToast('Export in development', 'info');
+    showToast('Экспорт в разработке', 'info');
   }
 
   async function handleLogout() {
     await authStore.logout();
-    showToast('Logged out successfully', 'success');
+    hasFetched = false;
+    bookingsData = [];
+    bookingsLoading = false;
+    showToast('Выход выполнен успешно', 'success');
   }
 
   function goToPage(page: number) {
@@ -180,7 +193,7 @@
         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
       </svg>
-      <p class="text-gray-600 font-medium">Checking authentication...</p>
+      <p class="text-gray-600 font-medium">Проверка аутентификации...</p>
     </div>
   </div>
 {:else if !$isAuthenticated}
@@ -208,12 +221,12 @@
       />
       
       {#if totalPages > 1}
-        <nav class="flex justify-center items-center gap-2 md:gap-3 mt-8 pt-6 border-t border-gray-200 p-4 md:p-6 lg:p-8" aria-label="Pagination">
+        <nav class="flex justify-center items-center gap-2 md:gap-3 mt-8 pt-6 border-t border-gray-200 p-4 md:p-6 lg:p-8">
           <button
             class="w-10 h-10 border border-gray-300 bg-white text-gray-700 rounded-lg flex items-center justify-center cursor-pointer transition-all hover:bg-gray-50 hover:border-primary disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={currentPage === 1}
             on:click={() => goToPage(currentPage - 1)}
-            aria-label="Previous page"
+            aria-label="Предыдущая страница"
           >
             &lt;
           </button>
@@ -224,7 +237,7 @@
                 ? 'border-primary bg-primary text-white'
                 : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50 hover:border-primary'}"
               on:click={() => goToPage(i + 1)}
-              aria-label="Page {i + 1}"
+              aria-label="Страница {i + 1}"
               aria-current={currentPage === i + 1 ? 'page' : undefined}
             >
               {i + 1}
@@ -235,7 +248,7 @@
             class="w-10 h-10 border border-gray-300 bg-white text-gray-700 rounded-lg flex items-center justify-center cursor-pointer transition-all hover:bg-gray-50 hover:border-primary disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={currentPage === totalPages}
             on:click={() => goToPage(currentPage + 1)}
-            aria-label="Next page"
+            aria-label="Следующая страница"
           >
             &gt;
           </button>
@@ -248,8 +261,8 @@
     <BookingDetailsModal
       booking={selectedBooking}
       on:close={() => (showDetailsModal = false)}
-      on:confirm={() => handleConfirm(selectedBooking.id)}
-      on:cancel={() => handleCancel(selectedBooking.id)}
+      on:confirm={() => selectedBooking && handleConfirm(selectedBooking.id)}
+      on:cancel={() => selectedBooking && handleCancel(selectedBooking.id)}
     />
   {/if}
 {/if}
