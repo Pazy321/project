@@ -146,7 +146,7 @@
                   type="text"
                   id="checkin"
                   class="form-input cursor-pointer"
-                  placeholder="Select date"
+                  placeholder="Выберите дату"
                   readonly
                   value={checkinText}
                   tabindex="-1"
@@ -170,7 +170,7 @@
                   type="text"
                   id="checkout"
                   class="form-input cursor-pointer"
-                  placeholder="Select date"
+                  placeholder="Выберите дату"
                   readonly
                   value={checkoutText}
                   tabindex="-1"
